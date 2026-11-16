@@ -57,15 +57,20 @@ namespace VidaPet
                         Console.WriteLine($"Animal: {nomeAnimalAtendimento}\nCRMV do Veterinário: {crmvVeterinarioAtendendo}\nData e hora: {dataHoraAtendimento:dd/MM/yyyy HH:mm}");
 
                         break;
+
+                        /*
                     case 4:
                         Console.WriteLine();
                         Console.WriteLine("=== Consultar Agenda Diária ===");
+
                         break;
 
                     case 5:
                         Console.WriteLine();
                         Console.WriteLine("=== Registrar Consulta Realizada ===");
+
                         break;
+                        */
 
                     case 0:
                         Console.WriteLine();
@@ -87,9 +92,11 @@ namespace VidaPet
             Console.WriteLine("1 - Cadastro de Veterinário");
             Console.WriteLine("2 - Cadastro de Animal");
             Console.WriteLine("3 - Agendamento de Consulta");
+            /*
             Console.WriteLine("4 - Consulta de Agenda Diária");
             Console.WriteLine("5 - Registro de Consulta Realizada");
-            Console.WriteLine("0 - Sair");
+            */
+                        Console.WriteLine("0 - Sair");
         }
 
         public static int ObterOpcao() {
@@ -101,7 +108,7 @@ namespace VidaPet
             {
                 Console.WriteLine();
                 Console.WriteLine("Escolha uma opção do menu: ");
-                string entrada = Console.ReadLine();
+                string entrada = Console.ReadLine() ?? "";
 
                 entradaValida = int.TryParse(entrada, out opcao);
 
@@ -121,13 +128,13 @@ namespace VidaPet
             do
             {
                 Console.WriteLine("Digite o NOME do veterinário ");
-                nomeVet = Console.ReadLine();
+                nomeVet = Console.ReadLine() ?? "";
             } while (string.IsNullOrEmpty(nomeVet));
 
             do
             {
                 Console.WriteLine("Digite o CRMV do veterinário ");
-                crmvVet = Console.ReadLine();
+                crmvVet = Console.ReadLine() ?? "";
             } while (string.IsNullOrEmpty(crmvVet));
         }
         
@@ -138,26 +145,41 @@ namespace VidaPet
 
             do {
                 Console.WriteLine("Digite o NOME do animal");
-                nomeAnimal = Console.ReadLine();
+                nomeAnimal = Console.ReadLine() ?? "";
+
             } while (string.IsNullOrEmpty(nomeAnimal));
 
             do {
-                Console.WriteLine("Digite a ESPÉCIE do animal");
-                especieAnimal = Console.ReadLine();
+                Console.WriteLine("Ecolha a ESPÉCIE do animal (1 - Cachorro | 2 - Gato)");
+                especieAnimal = Console.ReadLine() ?? "";
+
+                if (especieAnimal == "1") {
+                    especieAnimal = "Cachorro";
+                    Console.WriteLine($"Espécie selecionada: {especieAnimal}");
+                }
+                else if (especieAnimal == "2") {
+                    especieAnimal = "Gato";
+                    Console.WriteLine($"Espécie selecionada: {especieAnimal}");
+                }
+                else {
+                    Console.WriteLine($"Opção inválida.");
+                    especieAnimal = "";
+                }
+
             } while (string.IsNullOrEmpty(especieAnimal));
 
             do {
                 Console.WriteLine("Digite a IDADE do animal");
-            } while (!double.TryParse(Console.ReadLine(), out idadeAnimal));
+            } while (!double.TryParse(Console.ReadLine(), out idadeAnimal) || idadeAnimal <= 0);
 
             do {
                 Console.WriteLine("Digite o NOME do TUTOR");
-                nomeTutor = Console.ReadLine();
+                nomeTutor = Console.ReadLine() ?? "";
             } while (string.IsNullOrEmpty(nomeTutor));
 
             do {
                 Console.WriteLine("Digite o TELEFONE do TUTOR");
-                telefoneTutor = Console.ReadLine();
+                telefoneTutor = Console.ReadLine() ?? "";
             } while (string.IsNullOrEmpty(telefoneTutor) || (telefoneTutor.Length < 11 || telefoneTutor.Length > 14));
         }
     
@@ -172,7 +194,7 @@ namespace VidaPet
 
             do {
                 Console.WriteLine("Digite o NOME do ANIMAL a ser atendido: ");
-                nomeAnimalConsulta = Console.ReadLine();
+                nomeAnimalConsulta = Console.ReadLine() ?? "";
 
                 if (string.IsNullOrEmpty(nomeAnimalConsulta)) {
                     Console.WriteLine("O nome do animal não pode estar vazio.");
@@ -184,7 +206,7 @@ namespace VidaPet
 
             do {
                 Console.WriteLine("Digite o CRMV do VETERINÁRIO a realizar o atendimento: ");
-                crmvVeterinarioConsulta = Console.ReadLine();
+                crmvVeterinarioConsulta = Console.ReadLine() ?? "";
 
                 if (string.IsNullOrEmpty(crmvVeterinarioConsulta)) {
                     Console.WriteLine("Erro: O CRMV não pode estar vazio.");
@@ -196,12 +218,14 @@ namespace VidaPet
             do {
                 Console.WriteLine("Digite a DATA e HORA da consulta (dd/MM/yyyy HH:mm): ");
 
-                string dataHoraDigitados = Console.ReadLine();
+                string dataHoraDigitados = Console.ReadLine() ?? "";
 
                 dataValida = DateTime.TryParseExact(dataHoraDigitados, "dd/MM/yyyy HH:mm", null, DateTimeStyles.None, out dataHoraConsulta);
 
-                if (!dataValida)
-                {
+                if (dataValida && dataHoraConsulta < DateTime.Now) {
+                    dataValida = false;
+                    Console.WriteLine("A consulta não pode ser marcada em uma data passada!");
+                } else if (!dataValida) {
                     Console.WriteLine("Data ou hora inválida! Tente novamente.");
                 }
             } while (!dataValida);
